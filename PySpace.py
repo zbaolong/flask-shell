@@ -39,7 +39,7 @@ def execShell(file):
 
 @app.route('/', methods=['GET'])
 def hello_html():
-    return app.send_static_file("hello.html")
+    return app.send_static_file("html/hello.html")
 
 
 @app.route('/<name>', methods=['GET'])
