@@ -2,3 +2,6 @@
 echo "hello world"
 echo 'ahahahhahhah'
 echo  `ls`
+echo  `ls`
+echo  `ls`
+echo  `ls`

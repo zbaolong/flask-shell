@@ -5,58 +5,72 @@
     <title>测试python界面</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css"/>
     <style>
-    button{
-         margin:5px 10px;
-     }
+        button {
+            margin: 5px 10px;
+        }
     </style>
 </head>
 <body>
 <div style="text-align :center">
-<h3>测试环境项目部署启动</h3>
-<div class="row" style="margin:30px 15px">
-    <div class="col-sm-12">
-    <button class="btn btn-info btn-md" onclick="hello('test')">点击测试</button>
-    <button class="btn btn-info btn-md" onclick="hello('app')">重启app</button>
-    <button class="btn btn-info btn-md"onclick="hello('nginx')">重启nginx</button>
-    <button class="btn btn-info btn-md"onclick="hello('oa')">重启oa</button>
-    <button class="btn btn-info btn-md"onclick="hello('vue')">重启vue和apidoc</button>
-    </div>
+    <h3>测试环境项目部署启动</h3>
+    <div class="row" style="margin:30px 15px">
+        <div class="col-sm-12">
+            <button class="btn btn-info btn-md" onclick="hello('test')">点击测试</button>
+            <button class="btn btn-info btn-md" onclick="hello('app')">重启app</button>
+            <button class="btn btn-info btn-md" onclick="hello('nginx')">重启nginx</button>
+            <button class="btn btn-info btn-md" onclick="hello('oa')">重启oa</button>
+            <button class="btn btn-info btn-md" onclick="hello('vue')">重启vue和apidoc</button>
+        </div>
     </div>
     <div class="row">
         <div class="col-sm-12">
-    <div style="border-style: solid; background-color: black; color: azure">
-        <div id="content" style="overflow-y:scroll; overflow-x:scroll;padding:15px 20px;text-align:left;height:600px">
+            <div style="border-style: solid; background-color: black; color: azure">
+                <div id="content"
+                     style="overflow-y:scroll; overflow-x:scroll;padding:15px 20px;text-align:left;height:600px">
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
     </div>
 </div>
 
 <!-- loading -->
 <div class="modal fade" id="loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop='static'>
-      <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                                                <div class="modal-body">
-                                                            正在重启,请稍候。。。
-                                                                  </div>
-                                                                      </div>
-                                                                        </div>
-                                                                    </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                正在重启,请稍候。。。
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 <script src="../js/jquery.js"></script>
 <script src="../js/bootstrap.min.js"></script>
+<script src="../js/socket.io.js"></script>
 <script>
     function hello(name) {
         $("#loading").modal('show');
-        $.get('/'+name, function (data) {
-                $("#content").html('');
+        $.get('/' + name, function (data) {
+            $("#content").html('');
             $.each(data, function (index, item) {
-                $("#content").append('[root@188]#  '+item + '</br>');
+                $("#content").append('[root@188]#  ' + item + '</br>');
             })
-        $("#content").append('[root@188]#  重启'+name+'成功!</br>');
-        $("#loading").modal('hide');
+            $("#content").append('[root@188]#  重启' + name + '成功!</br>');
+            $("#loading").modal('hide');
         }, "json")
     }
+
+    var namespace = '/shell';
+    $(document).ready(function () {
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+        console.log("网站协议：", location.protocol);
+        socket.on('connect', function () {
+            console.log('I\'m connected!');
+        });
+        socket.on('message', function (msg) {
+            $("#content").append('<p>[root@188]# ' + msg.data + '</p>');
+        });
+    });
 </script>
 </html>
